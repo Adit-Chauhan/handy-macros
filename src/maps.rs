@@ -1,3 +1,4 @@
+#[macro_export]
 macro_rules! gmap {
     ($map:ident <$key:ty,$val:ty>) => {
         lazy_static::lazy_static! {
