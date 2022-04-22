@@ -1,14 +1,17 @@
 #[cfg(feature = "json")]
 pub mod json;
 
+#[cfg(feature = "gmap")]
+mod maps;
+
 #[macro_export]
 macro_rules! exit_with {
     ($x:literal) => {{
-        println!($x);
+        eprintln!($x);
         std::process::exit(1);
     }};
     ($x:literal,$code:literal) => {{
-        println!($x);
+        eprintln!($x);
         std::process::exit($code);
     }};
 }
@@ -19,8 +22,7 @@ macro_rules! match_exit {
         match $result {
             Ok(val) => val,
             Err(_) => {
-                eprintln!($exit_print);
-                std::process::exit(1);
+                exit_with!($exit_print);
             }
         }
     };
@@ -28,8 +30,7 @@ macro_rules! match_exit {
         match $result {
             Ok(val) => val,
             Err(_) => {
-                eprintln!($exit_print);
-                std::process::exit($code);
+                exit_with!($exit_print);
             }
         }
     };
@@ -75,13 +76,14 @@ macro_rules! tern {
 }
 
 #[macro_export]
-macro_rules! svec {
-    ($($x:expr),*) => (vec![$($x.to_string()),*]);
+macro_rules! s_vec {
+    [$($x:expr),*] => (vec![$($x.to_string()),*]);
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{iter_filter, iter_filter_map, iter_map, tern};
+    use super::{iter_filter, iter_filter_map, iter_map, s_vec, tern};
+
     #[test]
     fn test_tern() {
         assert!(tern![1<2 => true ; false]);
@@ -118,5 +120,17 @@ mod tests {
         let expected = vec![1, 5];
         let result: Vec<i32> = iter_filter_map!(into base,|s| s.parse().ok());
         assert_eq!(expected, result);
+    }
+
+    #[test]
+    fn test_string_vector() {
+        let expected = vec![
+            "1".to_string(),
+            "2".to_string(),
+            "3".to_string(),
+            "4".to_string(),
+        ];
+        let actual = s_vec!["1", "2", "3", "4"];
+        assert_eq!(expected, actual);
     }
 }
