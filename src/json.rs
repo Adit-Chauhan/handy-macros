@@ -8,10 +8,10 @@ macro_rules! json_travel {
     }
 
 #[macro_export]
-macro_rules! json_file {
-    (create $x:expr,$fn:expr) => {
+macro_rules! json_write_file {
+    ($x:expr,$file:expr) => {
         let j = serde_json::to_string($x).expect("Coudnot serialize");
-        let mut fp = std::fs::File::create($fn).expect("could not create File");
+        let mut fp = std::fs::File::create($file).expect("could not create File");
         fp.write(j.as_bytes()).expect("failed to write to file");
     };
 }

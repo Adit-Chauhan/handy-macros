@@ -37,7 +37,15 @@ macro_rules! match_exit {
 }
 
 #[macro_export]
-macro_rules! iter_map {
+macro_rules! map {
+    // more verbose
+    ($func:block on $vector:expr) => {
+        $vector.iter().map($func).collect()
+    };
+    ($func:block into $vector:expr) => {
+        $vector.into_iter().map($func).collect()
+    };
+    // normal
     ($vector:expr,$func:expr) => {
         $vector.iter().map($func).collect()
     };
@@ -47,7 +55,7 @@ macro_rules! iter_map {
 }
 
 #[macro_export]
-macro_rules! iter_filter {
+macro_rules! filter {
     ($vector:expr,$func:expr) => {
         $vector.iter().filter($func).collect()
     };
@@ -57,7 +65,7 @@ macro_rules! iter_filter {
 }
 
 #[macro_export]
-macro_rules! iter_filter_map {
+macro_rules! filter_map {
     ($vector:expr,$func:expr) => {
         $vector.iter().filter_map($func).collect()
     };
@@ -69,10 +77,10 @@ macro_rules! iter_filter_map {
 
 #[macro_export]
 macro_rules! tern {
-[$cond:expr => $true:expr ; $false:expr] => {
-    if $cond {$true}
-    else{$false}
-};
+    [$cond:expr => $true:expr ; $false:expr] => {
+        if $cond {$true}
+        else {$false}
+    };
 }
 
 #[macro_export]
@@ -82,7 +90,7 @@ macro_rules! s_vec {
 
 #[cfg(test)]
 mod tests {
-    use super::{iter_filter, iter_filter_map, iter_map, s_vec, tern};
+    use super::{filter, filter_map, map, s_vec, tern};
 
     #[test]
     fn test_tern() {
@@ -91,34 +99,34 @@ mod tests {
     }
 
     #[test]
-    fn test_iter_map() {
+    fn test_map() {
         let base = vec![1, 2, 3, 4, 5];
         let comp = vec![2, 4, 6, 8, 10];
-        let ans: Vec<i32> = iter_map!(base, |x| { x * 2 });
-        let ans2: Vec<i32> = iter_map!(into base, |x|{x*2});
-        assert_eq!(comp, ans);
+        let anss: Vec<i32> = map!({|x|{x*2}} on base);
+        assert_eq!(comp, anss);
+        let ans2: Vec<i32> = map!({|x|{x*2}} into base);
         assert_eq!(comp, ans2);
     }
 
     #[test]
-    fn test_iter_filter() {
+    fn test_filter() {
         let base = vec![1, 2, 3, 4, 5, 6, 7, 8];
         let expected = vec![&2, &4, &6, &8];
-        let result: Vec<&i32> = iter_filter!(base, |x| (*x) % 2 == 0);
+        let result: Vec<&i32> = filter!(base, |x| (*x) % 2 == 0);
         assert_eq!(expected, result);
         let expected = vec![2, 4, 6, 8];
-        let result: Vec<i32> = iter_filter!(into base,|x| x%2 == 0);
+        let result: Vec<i32> = filter!(into base,|x| x%2 == 0);
         assert_eq!(expected, result);
     }
 
     #[test]
-    fn test_iter_filter_map() {
+    fn test_filter_map() {
         let base = vec!["1", "two", "tree", "5"];
         let expected = vec![1, 5];
-        let result: Vec<i32> = iter_filter_map!(base, |s| s.parse().ok());
+        let result: Vec<i32> = filter_map!(base, |s| s.parse().ok());
         assert_eq!(expected, result);
         let expected = vec![1, 5];
-        let result: Vec<i32> = iter_filter_map!(into base,|s| s.parse().ok());
+        let result: Vec<i32> = filter_map!(into base,|s| s.parse().ok());
         assert_eq!(expected, result);
     }
 
