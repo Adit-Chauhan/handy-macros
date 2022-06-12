@@ -88,6 +88,25 @@ macro_rules! s_vec {
     [$($x:expr),*] => (vec![$($x.to_string()),*]);
 }
 
+#[macro_export]
+macro_rules! sleep {
+    ($time:expr; ns) => {
+        std::thread::sleep(std::time::Duration::from_nanos($time));
+    };
+    ($time:expr; us) => {
+        std::thread::sleep(std::time::Duration::from_micros($time));
+    };
+    ($time:expr; ms) => {
+        std::thread::sleep(std::time::Duration::from_millis($time));
+    };
+    ($time:expr; s) => {
+        std::thread::sleep(std::time::Duration::from_secs($time));
+    };
+    ($time:expr; fs) => {
+        std::thread::sleep(std::time::Duration::from_secs_f64($time));
+    };
+}
+
 #[cfg(test)]
 mod tests {
     use super::{filter, filter_map, map, s_vec, tern};
