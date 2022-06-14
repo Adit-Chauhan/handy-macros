@@ -89,6 +89,17 @@ macro_rules! s_vec {
 }
 
 #[macro_export]
+macro_rules! const_declare {
+    ($type:ty; $x:ident,$y:expr) => {
+        const $x: $type = $y;
+    };
+    ($type:ty; $x:ident,$y:expr, $($nx:ident,$ny:expr),+) => {
+        const $x: $type = $y;
+        const_declare!{$type; $($nx,$ny),+};
+    };
+}
+
+#[macro_export]
 macro_rules! sleep {
     ($time:expr; ns) => {
         std::thread::sleep(std::time::Duration::from_nanos($time));
