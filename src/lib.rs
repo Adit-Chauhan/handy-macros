@@ -95,7 +95,7 @@ macro_rules! const_declare {
     };
     ($type:ty; $x:ident,$y:expr, $($nx:ident,$ny:expr),+) => {
         const $x: $type = $y;
-        const_declare!{$type; $($nx,$ny),+};
+        const_declare!{$type; $($nx,$ny),+}
     };
 }
 
