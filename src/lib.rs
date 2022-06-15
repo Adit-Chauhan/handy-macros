@@ -89,13 +89,13 @@ macro_rules! s_vec {
 }
 
 #[macro_export]
-macro_rules! const_declare {
-    ($type:ty; $x:ident,$y:expr) => {
+macro_rules! consts {
+    ($type:ty; $x:ident = $y:expr) => {
         const $x: $type = $y;
     };
-    ($type:ty; $x:ident,$y:expr, $($nx:ident,$ny:expr),+) => {
+    ($type:ty; $x:ident = $y:expr, $($nx:ident = $ny:expr);+) => {
         const $x: $type = $y;
-        const_declare!{$type; $($nx,$ny),+}
+        const_declare!{$type; $($nx = $ny);+}
     };
 }
 
