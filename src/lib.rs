@@ -101,18 +101,27 @@ macro_rules! const_declare {
 
 #[macro_export]
 macro_rules! lets {
-    ($mut:expr, $x:ident = $y:expr) => {
-        if $mut{
-        let mut $x = $y;
-        }
-        else {
+    ($x:ident = $y:expr) => {
             let $x = $y;
-        }
     };
 
-    ($mut:expr, $x:ident = $y:expr; $($muts:expr, $xs:ident = $ys:expr);+) => {
+    ($x:ident = $y:expr; $($xs:ident = $ys:expr);+) => {
         let $x = $y;
-        lets!{$($muts,$xs = $ys);+};
+        lets!{$($xs = $ys);+};
+    }
+}
+
+#[macro_export]
+macro_rules! lets_mut
+{
+
+    ($x:ident = $y:expr) => {
+        let mut $x = $y;
+    };
+
+    ($x:ident = $y:expr; $($xs:ident = $ys:expr);+) => {
+        let mut $x = $y;
+        lets_mut!{$($xs = $ys);+};
     }
 }
 
