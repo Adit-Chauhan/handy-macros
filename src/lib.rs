@@ -100,6 +100,17 @@ macro_rules! const_declare {
 }
 
 #[macro_export]
+macro_rules! lets {
+    ($x:ident = $y:expr) => {
+        let $x = $y;
+    };
+    ( $x:ident = $y:expr; $($xs:ident = $ys:expr);+) => {
+        let $x = $y;
+        lets!{$($xs,$ys);+};
+    }
+}
+
+#[macro_export]
 macro_rules! sleep {
     ($time:expr; ns) => {
         std::thread::sleep(std::time::Duration::from_nanos($time));
