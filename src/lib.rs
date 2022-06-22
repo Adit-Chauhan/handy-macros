@@ -89,6 +89,34 @@ macro_rules! s_vec {
 }
 
 #[macro_export]
+macro_rules! gaurd {
+    ($cond:expr) => {
+        if $cond {
+            return;
+        }
+    };
+    ($cond:expr, $default:expr) => {
+        if $cond {
+            return $default;
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! gaurd_loop {
+    ($cond:expr) => {
+        if $cond {
+            break;
+        }
+    };
+    ($cond:expr,$loop_name:tt) => {
+        if $cond {
+            break $loop_name;
+        }
+    };
+}
+
+#[macro_export]
 macro_rules! consts {
     ($type:ty; $x:ident = $y:expr) => {
         const $x: $type = $y;
@@ -196,5 +224,14 @@ mod tests {
         ];
         let actual = s_vec!["1", "2", "3", "4"];
         assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn test_loop_exit() {
+        'named: loop {
+            gaurd_loop!(true, 'named);
+            assert!(false);
+        }
+        assert!(true);
     }
 }
